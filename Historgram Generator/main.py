@@ -1,17 +1,18 @@
+# Project Title: Histogram Generator
+
 import numpy as np
 import matplotlib.pyplot as plt
 
 # Example data points
-data_points = np.random.normal(loc=0, scale=1, size=1000)
+data_points = np.random.normal(0, 1, 1000)  # Generate 1000 random data points
 
 # Generate histogram
-hist, bins = np.histogram(data_points, bins=30)
+plt.hist(data_points, bins=30, edgecolor='black')
 
-# Plot histogram
-plt.figure(figsize=(10, 6))
-plt.hist(data_points, bins=bins, color='blue', alpha=0.7)
+# Add titles and labels
 plt.title("Histogram of Data Points")
 plt.xlabel("Value")
 plt.ylabel("Frequency")
-plt.grid(True)
+
+# Display the histogram
 plt.show()
