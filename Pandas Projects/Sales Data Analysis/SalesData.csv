@@ -1,0 +1,27 @@
+import pandas as pd
+import numpy as np
+import random
+from datetime import datetime, timedelta
+
+# Define sample data
+products = ['Laptop', 'Smartphone', 'Tablet', 'Headphones', 'Monitor', 'Keyboard', 'Mouse', 'Printer']
+regions = ['North', 'South', 'East', 'West']
+num_rows = 100  # Number of rows in the DataFrame
+
+# Generate random sales data
+data = {
+    'Product': [random.choice(products) for _ in range(num_rows)],
+    'Sales': np.random.randint(50, 1000, size=num_rows),  # Random sales between $50 and $1000
+    'Date': [datetime.now() - timedelta(days=random.randint(1, 365)) for _ in range(num_rows)],  # Random dates within the last year
+    'Region': [random.choice(regions) for _ in range(num_rows)]
+}
+
+# Create the DataFrame
+sales_data = pd.DataFrame(data)
+
+# Preview the generated data
+print("Real-Time Sales DataFrame:")
+print(sales_data.head())
+
+# Save DataFrame to CSV (optional)
+sales_data.to_csv('sales_data.csv', index=False)
