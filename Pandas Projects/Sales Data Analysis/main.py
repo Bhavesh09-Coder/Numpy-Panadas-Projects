@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 
 # Read the sales data CSV file (Replace 'sales_data.csv' with your real-time data file)
 file_path = 'sales_data.csv'
-sales_data = pd.read_csv(file_path)
+sales_data = pd.read_csv('SalesData.csv')
 
 # Show the first few rows of the dataset
 print("Sales Data Preview:")
