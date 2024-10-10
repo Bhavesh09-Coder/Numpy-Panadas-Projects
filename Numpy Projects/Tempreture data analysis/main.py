@@ -1,36 +1,44 @@
 # Project Title: Temperature Data Analysis
 
+import pandas as pd
 import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
 
-# Example temperature data for a week (in degrees Celsius)
-temperature_data = np.array([22.5, 25.3, 19.8, 23.1, 26.5, 21.0, 20.2])
+# Load the temperature data
+data = pd.read_csv('temperature_data.csv')
 
-# Calculate the average temperature
-average_temp = np.mean(temperature_data)
-print(f"Average Temperature: {average_temp:.2f}°C")
+# Convert the 'Date' column to datetime
+data['Date'] = pd.to_datetime(data['Date'])
 
-# Calculate the maximum temperature
-max_temp = np.max(temperature_data)
-print(f"Maximum Temperature: {max_temp:.2f}°C")
+# Display the first few rows of the dataset
+print("Temperature Data:")
+print(data.head())
 
-# Calculate the minimum temperature
-min_temp = np.min(temperature_data)
-print(f"Minimum Temperature: {min_temp:.2f}°C")
-# Project Title: Temperature Data Analysis
+# Calculate basic statistics
+mean_temp = np.mean(data['Temperature (°C)'])
+max_temp = np.max(data['Temperature (°C)'])
+min_temp = np.min(data['Temperature (°C)'])
+median_temp = np.median(data['Temperature (°C)'])
+std_temp = np.std(data['Temperature (°C)'])
 
-import numpy as np
+print("\nStatistics:")
+print(f"Mean Temperature: {mean_temp:.2f} °C")
+print(f"Max Temperature: {max_temp:.2f} °C")
+print(f"Min Temperature: {min_temp:.2f} °C")
+print(f"Median Temperature: {median_temp:.2f} °C")
+print(f"Standard Deviation: {std_temp:.2f} °C")
 
-# Example temperature data for a week (in degrees Celsius)
-temperature_data = np.array([22.5, 25.3, 19.8, 23.1, 26.5, 21.0, 20.2])
+# Create a line plot for Temperature
+plt.figure(figsize=(14, 6))
+sns.lineplot(x=data['Date'], y=data['Temperature (°C)'], marker='o')
 
-# Calculate the average temperature
-average_temp = np.mean(temperature_data)
-print(f"Average Temperature: {average_temp:.2f}°C")
+# Adding title and labels
+plt.title('Temperature Data Analysis')
+plt.xlabel('Date')
+plt.ylabel('Temperature (°C)')
+plt.xticks(rotation=45)
+plt.tight_layout()
 
-# Calculate the maximum temperature
-max_temp = np.max(temperature_data)
-print(f"Maximum Temperature: {max_temp:.2f}°C")
-
-# Calculate the minimum temperature
-min_temp = np.min(temperature_data)
-print(f"Minimum Temperature: {min_temp:.2f}°C")
+# Show the plot
+plt.show()
