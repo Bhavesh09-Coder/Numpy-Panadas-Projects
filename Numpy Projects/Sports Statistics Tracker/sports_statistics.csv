@@ -1,0 +1,18 @@
+import numpy as np
+import random
+import csv
+
+# Define player names and sample statistics
+player_names = [f"Player_{i}" for i in range(1, 101)]
+scores = np.random.randint(50, 200, size=100)  # Random scores between 50 and 200
+wins = np.random.randint(0, 50, size=100)  # Random win records between 0 and 50
+losses = np.random.randint(0, 50, size=100)  # Random loss records between 0 and 50
+
+# Create a CSV file with player statistics
+with open('sports_statistics.csv', mode='w', newline='') as file:
+    writer = csv.writer(file)
+    writer.writerow(["Player Name", "Score", "Wins", "Losses"])  # Header
+    for name, score, win, loss in zip(player_names, scores, wins, losses):
+        writer.writerow([name, score, win, loss])
+
+print("CSV file 'sports_statistics.csv' created with 100 player records.")
