@@ -1,37 +1,42 @@
 import numpy as np
-import csv
 
-# Initialize lists to hold data
-players = []
-scores = []
-wins = []
-losses = []
+# Define a function to save the statistics to a CSV file
+def save_to_csv(filename, players, scores, records):
+    with open(filename, 'w') as f:
+        f.write("Player Name,Score,Win/Loss\n")
+        for i in range(len(players)):
+            f.write(f"{players[i]},{scores[i]},{records[i]}\n")
 
-# Read the CSV file
-with open('sports_statistics.csv', mode='r') as file:
-    reader = csv.reader(file)
-    next(reader)  # Skip header
-    for row in reader:
-        players.append(row[0])
-        scores.append(int(row[1]))
-        wins.append(int(row[2]))
-        losses.append(int(row[3]))
+# Initialize player data
+players = np.array([
+    "Alice", "Bob", "Charlie", "David", "Eva", "Frank", "Grace", "Hannah", 
+    "Ian", "Jack", "Karen", "Liam", "Mia", "Noah", "Olivia", "Paul", 
+    "Quinn", "Rita", "Sam", "Tina", "Uma", "Vera", "Will", "Xena", 
+    "Yara", "Zane", "Amy", "Ben", "Cara", "Derek", "Ella", "Felix", 
+    "Gina", "Hugo", "Ivy", "Jade", "Kirk", "Lola", "Milo", "Nina", 
+    "Oscar", "Pia", "Quincy", "Ray", "Sophie", "Tom", "Ulysses", 
+    "Violet", "Wendy", "Xander", "Yvonne", "Zach", "Alex", "Brittany", 
+    "Carlos", "Diana", "Eric", "Fiona", "George", "Holly", "Iris", 
+    "Jake", "Kelsey", "Leo", "Monica", "Nolan", "Opal", "Pauline", 
+    "Quinton", "Riley", "Sandra", "Tyler", "Ursula", "Victor", "Wendy", 
+    "Xander", "Yasmine", "Zane", "Abby", "Brad", "Clara", "Derek", 
+    "Elena", "Frankie", "Ginger", "Hank", "Ivy", "Jasper", "Kimberly", 
+    "Liam", "Mia", "Nathan", "Olivia"
+])
 
-# Convert lists to NumPy arrays for analysis
-scores_array = np.array(scores)
-wins_array = np.array(wins)
-losses_array = np.array(losses)
+scores = np.random.randint(0, 100, size=len(players))
+records = np.random.choice(["Win", "Loss"], size=len(players))
 
-# Perform analysis
-average_score = np.mean(scores_array)
-total_wins = np.sum(wins_array)
-total_losses = np.sum(losses_array)
-highest_score = np.max(scores_array)
-best_player_index = np.argmax(scores_array)
+# Calculate statistics
+average_score = np.mean(scores)
+win_count = np.sum(records == "Win")
+loss_count = np.sum(records == "Loss")
 
-# Output results
-print("Sports Statistics Analysis:")
+# Print statistics
 print(f"Average Score: {average_score:.2f}")
-print(f"Total Wins: {total_wins}")
-print(f"Total Losses: {total_losses}")
-print(f"Highest Score: {highest_score} by {players[best_player_index]}")
+print(f"Total Wins: {win_count}")
+print(f"Total Losses: {loss_count}")
+
+# Save statistics to CSV
+save_to_csv("sports_statistics.csv", players, scores, records)
+print("Statistics saved to sports_statistics.csv")
