@@ -1,59 +1,46 @@
+# Import necessary libraries
 import pandas as pd
 
-# Load the dataset from a CSV file (after downloading it from Kaggle)
-movies = pd.read_csv("movies.csv")
-ratings = pd.read_csv("ratings.csv")
+# Load dataset
+movies_url = 'http://files.grouplens.org/datasets/movielens/ml-100k/u.item'
+ratings_url = 'http://files.grouplens.org/datasets/movielens/ml-100k/u.data'
 
-# Display the first few rows of the movies and ratings datasets
-print("Movies Dataset:")
-print(movies.head())
-print("\nRatings Dataset:")
-print(ratings.head())
+# Load movies data
+movies_columns = ['movie_id', 'title', 'release_date', 'video_release_date', 'IMDb_URL', 'unknown', 'Action', 'Adventure', 'Animation', 
+                  'Children', 'Comedy', 'Crime', 'Documentary', 'Drama', 'Fantasy', 'Film-Noir', 'Horror', 'Musical', 'Mystery', 'Romance',
+                  'Sci-Fi', 'Thriller', 'War', 'Western']
+movies_df = pd.read_csv(movies_url, sep='|', names=movies_columns, encoding='latin-1')
 
-# Merge the movies and ratings dataset on 'movieId'
-movie_ratings = pd.merge(ratings, movies, on='movieId')
+# Load ratings data
+ratings_columns = ['user_id', 'movie_id', 'rating', 'timestamp']
+ratings_df = pd.read_csv(ratings_url, sep='\t', names=ratings_columns)
 
-# Analyze movie ratings - Calculate average rating and the number of ratings for each movie
-movie_stats = movie_ratings.groupby('title').agg({
-    'rating': ['mean', 'count']
-}).reset_index()
+# Merge both dataframes on 'movie_id'
+movie_ratings_df = pd.merge(ratings_df, movies_df[['movie_id', 'title']], on='movie_id')
 
-# Rename columns for easier access
-movie_stats.columns = ['title', 'average_rating', 'num_ratings']
+# Display basic data information
+print("Sample data:")
+print(movie_ratings_df.head())
 
-# Display top movies by average rating (with at least 100 ratings for quality control)
-top_rated_movies = movie_stats[movie_stats['num_ratings'] >= 100].sort_values(by='average_rating', ascending=False)
-print("\nTop Rated Movies (at least 100 ratings):")
-print(top_rated_movies.head(10))
+# Function to calculate average rating for each movie
+average_ratings = movie_ratings_df.groupby('title')['rating'].mean().sort_values(ascending=False)
 
-# Simple Recommendation System - Recommend movies similar to user preferences
-def recommend_movies(user_movie):
-    """ Recommend movies similar to the given user's preferred movie. """
-    user_movie_ratings = movie_ratings[movie_ratings['title'] == user_movie]
+# Function to calculate number of ratings for each movie
+num_ratings = movie_ratings_df.groupby('title')['rating'].count().sort_values(ascending=False)
 
-    # Find other users who rated the same movie
-    users_who_rated = user_movie_ratings['userId'].unique()
+# Create a DataFrame combining average rating and number of ratings
+ratings_summary_df = pd.DataFrame({'average_rating': average_ratings, 'num_ratings': num_ratings})
 
-    # Find other movies rated by these users
-    similar_movies = movie_ratings[movie_ratings['userId'].isin(users_who_rated)]
+# Display the top 10 movies by average rating
+print("\nTop 10 movies by average rating:")
+print(ratings_summary_df.head(10))
 
-    # Group by title and calculate average rating and number of ratings for these similar movies
-    similar_movie_stats = similar_movies.groupby('title').agg({
-        'rating': ['mean', 'count']
-    }).reset_index()
+# Build a simple recommendation system: Recommend movies based on the highest average rating and number of ratings
+def recommend_movies(min_ratings=100):
+    """Recommend movies with average rating and number of ratings greater than min_ratings."""
+    recommended_movies = ratings_summary_df[ratings_summary_df['num_ratings'] >= min_ratings]
+    return recommended_movies.sort_values(by='average_rating', ascending=False).head(10)
 
-    # Rename columns
-    similar_movie_stats.columns = ['title', 'average_rating', 'num_ratings']
-
-    # Filter movies with at least 50 ratings
-    recommended_movies = similar_movie_stats[similar_movie_stats['num_ratings'] >= 50]
-
-    # Sort movies by average rating
-    recommended_movies = recommended_movies.sort_values(by='average_rating', ascending=False)
-
-    return recommended_movies.head(10)
-
-# Example Recommendation for a user who liked 'Toy Story (1995)'
-recommended = recommend_movies('Toy Story (1995)')
-print("\nRecommended Movies for fans of 'Toy Story (1995)':")
-print(recommended)
+# Recommend top 10 movies based on the criteria
+print("\nTop 10 recommended movies (min 100 ratings):")
+print(recommend_movies(100))
