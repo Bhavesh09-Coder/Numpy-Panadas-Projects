@@ -1,5 +1,6 @@
 # Import necessary libraries
 import pandas as pd
+import random
 
 # Load dataset
 movies_url = 'http://files.grouplens.org/datasets/movielens/ml-100k/u.item'
@@ -44,3 +45,16 @@ def recommend_movies(min_ratings=100):
 # Recommend top 10 movies based on the criteria
 print("\nTop 10 recommended movies (min 100 ratings):")
 print(recommend_movies(100))
+
+# Function to recommend a random good movie
+def random_good_movie():
+    """Recommend a random movie with an average rating of 4.0 or higher."""
+    good_movies = ratings_summary_df[ratings_summary_df['average_rating'] >= 4.0]
+    if not good_movies.empty:
+        return good_movies.sample(n=1)
+    else:
+        return "No good movies found."
+
+# Get a random good movie recommendation
+print("\nRandom Good Movie Recommendation:")
+print(random_good_movie())
